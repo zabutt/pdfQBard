@@ -6,7 +6,7 @@ from PyPDF2 import PdfReader
 st.title("Ask Me Anything About Your PDF")
 
 # Input for OpenAI API key (optional, for flexibility)
-openai_key = st.text_input("Enter your OpenAI API key (optional, if not set in secrets)", type="password")
+openai_key = st.text_input("Enter your OpenAI API key (optional, if not set in secrets)")
 if openai_key:
     openai.api_key = openai_key
 else:
@@ -34,16 +34,16 @@ if uploaded_file:
         prompt = f"Answer the following question about the provided PDF document:\n{user_question}\n\nDocument contents:\n{pdf_text}"
 
         try:
-            response = openai.Completion.create(
-                engine="text-davinci-003",  # Use the most capable model
+            response = openai.Completion.create(  # Adjusted syntax for OpenAI 1.0.0+
+                engine="text-davinci-003",
                 prompt=prompt,
-                max_tokens=150,  # Adjust as needed
-                stop=None,  # Allow for longer responses if required
+                max_tokens=150,
+                stop=None,
                 temperature=0.7,
             )
             answer = response.choices[0].text.strip()
             st.write("Answer:", answer)
-        except openai.error.OpenAIError as e:
+        except Exception as e:  # Generalized exception handling
             st.error("Error:", e)
 
 # Custom styling for a beautiful GUI
