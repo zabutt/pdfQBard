@@ -5,6 +5,10 @@ from PyPDF2 import PdfReader
 # Title
 st.title("Ask Me Anything About Your PDF")
 
+st.write("  ")
+st.write(openai.__version__)
+st.write("  ")
+
 # Input for OpenAI API key (optional, for flexibility)
 openai_key = st.text_input("Enter your OpenAI API key (optional, if not set in secrets)", type="password")
 if openai_key:
