@@ -2,15 +2,20 @@ import streamlit as st
 import openai
 from PyPDF2 import PdfReader
 
-# Set OpenAI API key securely using secrets management
-openai.api_key = st.secrets["OPENAI_API_KEY"]
-
+# Title
 st.title("Ask Me Anything About Your PDF")
 
 # Input for OpenAI API key (optional, for flexibility)
 openai_key = st.text_input("Enter your OpenAI API key (optional, if not set in secrets)")
 if openai_key:
     openai.api_key = openai_key
+else:
+    try:
+        # Check for secrets if user doesn't provide a key
+        openai.api_key = st.secrets["OPENAI_API_KEY"]
+    except KeyError:
+        st.error("OpenAI API key is required. Please provide it in secrets or enter it manually.")
+        st.stop()  # Halt execution if no key is available
 
 # Upload PDF file
 uploaded_file = st.file_uploader("Upload a PDF file", type=["pdf"])
