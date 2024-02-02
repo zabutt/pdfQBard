@@ -1,6 +1,6 @@
 import streamlit as st
 import openai
-from PyPDF2 import PdfFileReader
+import fitz  # PyMuPDF
 
 # Title
 st.title("Ask Me Anything About Your PDF")
@@ -21,11 +21,11 @@ else:
 uploaded_file = st.file_uploader("Upload a PDF file", type=["pdf"])
 
 if uploaded_file:
-    ## pdf_reader = PdfFileReader(uploaded_file)
-    pdf_reader = PdfReader(uploaded_file)
     pdf_text = ""
-    for page in range(pdf_reader.getNumPages()):
-        pdf_text += pdf_reader.getPage(page).extract_text()
+    with fitz.open(stream=uploaded_file.read(), filetype="pdf") as pdf_doc:
+        for page_number in range(pdf_doc.page_count):
+            page = pdf_doc[page_number]
+            pdf_text += page.get_text()
 
     # User's question
     user_question = st.text_input("Ask a question about the PDF:")
@@ -42,7 +42,8 @@ if uploaded_file:
                 stop=None,
                 temperature=0.7,
             )
-            answer = response['choices'][0]['text'].strip()
+            answer = response['choices'][0]['text'] if response['choices'] else "No answer generated."
+            answer = answer.strip()
             st.write("Answer:", answer)
         except Exception as e:
             st.error(f"Error: {e}")
