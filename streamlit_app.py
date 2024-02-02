@@ -21,6 +21,14 @@ else:
         st.error("OpenAI API key is required. Please provide it in secrets or enter it manually.")
         st.stop()  # Halt execution if no key is available
 
+# Run OpenAI migrate
+try:
+    st.write("Running OpenAI migrate...")
+    openai.migrate()
+    st.write("OpenAI migration successful!")
+except Exception as migrate_error:
+    st.warning(f"OpenAI migrate error: {migrate_error}")
+
 # Upload PDF file
 uploaded_file = st.file_uploader("Upload a PDF file", type=["pdf"])
 
@@ -51,8 +59,7 @@ if uploaded_file:
             st.error(f"Error: {e}")
 
 # Custom styling for a beautiful GUI
-st.markdown(
-    """
+st.markdown("""
 <style>
 body {
   background-color: #f5f5f5;
@@ -64,4 +71,8 @@ body {
 .st-b5 {
   margin-top: 20px;
   padding: 20px;
-  background
+  background-color: #fff;
+  border-radius: 5px;
+}
+</style>
+""", unsafe_allow_html=True)
