@@ -5,10 +5,6 @@ from PyPDF2 import PdfFileReader
 # Title
 st.title("Ask Me Anything About Your PDF")
 
-st.write("  ")
-st.write(openai.__version__)
-st.write("  ")
-
 # Input for OpenAI API key (optional, for flexibility)
 openai_key = st.text_input("Enter your OpenAI API key (optional, if not set in secrets)", type="password")
 if openai_key:
@@ -21,21 +17,13 @@ else:
         st.error("OpenAI API key is required. Please provide it in secrets or enter it manually.")
         st.stop()  # Halt execution if no key is available
 
-# Run OpenAI migrate
-try:
-    st.write("Running OpenAI migrate...")
-    openai.migrate()
-    st.write("OpenAI migration successful!")
-except Exception as migrate_error:
-    st.warning(f"OpenAI migrate error: {migrate_error}")
-
 # Upload PDF file
 uploaded_file = st.file_uploader("Upload a PDF file", type=["pdf"])
 
 if uploaded_file:
-    pdf_reader = PdfFileReader(uploaded_file)  # Corrected line
+    pdf_reader = PdfFileReader(uploaded_file)
     pdf_text = ""
-    for page in range(pdf_reader.getNumPages()):  # Iterate over pages using range
+    for page in range(pdf_reader.getNumPages()):
         pdf_text += pdf_reader.getPage(page).extract_text()
 
     # User's question
@@ -53,13 +41,14 @@ if uploaded_file:
                 stop=None,
                 temperature=0.7,
             )
-            answer = response.choices[0].text.strip()
+            answer = response['choices'][0]['text'].strip()
             st.write("Answer:", answer)
         except Exception as e:
             st.error(f"Error: {e}")
 
 # Custom styling for a beautiful GUI
-st.markdown("""
+st.markdown(
+    """
 <style>
 body {
   background-color: #f5f5f5;
@@ -75,4 +64,6 @@ body {
   border-radius: 5px;
 }
 </style>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
