@@ -21,7 +21,8 @@ else:
 uploaded_file = st.file_uploader("Upload a PDF file", type=["pdf"])
 
 if uploaded_file:
-    pdf_reader = PdfFileReader(uploaded_file)
+    ## pdf_reader = PdfFileReader(uploaded_file)
+    pdf_reader = PdfReader(uploaded_file)
     pdf_text = ""
     for page in range(pdf_reader.getNumPages()):
         pdf_text += pdf_reader.getPage(page).extract_text()
